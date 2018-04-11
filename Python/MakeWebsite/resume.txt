@@ -1,0 +1,23 @@
+Zi Chen
+
+University of Pennsylvania, Philadelphia, PA, USA  -  Master of Science in Electrical Engineering
+
+University of California, Los Angeles, CA, USA  - Bachelor of Science in Telecommunication Engineering
+
+zichen@seas.upenn.edu
+
+Courses - : Programming Languages and Techniques, Networked System, Software System
+
+
+
+Projects
+
+VLAN Building - Built a VLAN on Juniper switch and analyzed network congestion under UDP transmission
+
+Signal FIlter - Designed several different signal filters to realize bass booster for input music (using Matlab)
+
+
+
+------------------------------
+
+ 
