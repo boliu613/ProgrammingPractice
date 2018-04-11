@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 1 elements(s) to &apos;sampleRoute.js&apos;&#x0A;- Original project: &apos;HW3&apos;&#x0A;- Destination element: &apos;sampleRoute.js&apos;&#x0A;- Original element: &apos;sampleRoute.js&apos;" description="Copy file" element1="routes/sampleRoute.js" files="1" flags="589830" folders="0" id="org.eclipse.wst.jsdt.ui.copy" log="routes/sampleRoute.js&#x09;true&#x09;true&#x09;yourworkRoute.js" policy="org.eclipse.wst.jsdt.ui.copyResources" stamp="1444980149255" target="/HW3/routes/sampleRoute.js" units="0" version="1.0"/>
+</session>

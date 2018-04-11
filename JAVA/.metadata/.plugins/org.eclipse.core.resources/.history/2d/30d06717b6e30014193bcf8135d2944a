@@ -1,0 +1,71 @@
+package battleship;
+
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class OceanTest {
+	Ocean ocean;
+	Battleship battleship;
+	Cruiser cruiser;
+	Destroyer destroyer;
+	Submarine submarine;
+	
+	@Before
+	public void setUp() throws Exception {
+		ocean = new Ocean();
+		battleship = new Battleship();
+		cruiser = new Cruiser();
+		destroyer = new Destroyer();
+		submarine = new Submarine();
+	}
+
+	@Test
+	public void testOcean() {
+		Ocean ocean = new Ocean();
+		assertTrue(ocean instanceof Ocean);
+	}
+
+	@Test
+	public void testPlaceAllShipsRandomly() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testIsOccupied() {
+		assertFalse(ocean.isOccupied(0, 0));
+		
+	}
+
+	@Test
+	public void testShootAt() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetShotsFired() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetHitCount() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetShipsSunk() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testIsGameOver() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetShipArray() {
+		fail("Not yet implemented");
+	}
+
+}

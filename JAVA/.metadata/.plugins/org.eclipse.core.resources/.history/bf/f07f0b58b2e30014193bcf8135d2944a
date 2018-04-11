@@ -1,0 +1,189 @@
+package battleship;
+
+import java.util.Random;
+
+public class Ocean {
+	//Instance variables
+	Ship[][] ships; // Used to quickly determine which ship is in any given location.
+	private boolean[][] hit;
+	private int shotsFired; // The total number of shots fired by the user.
+	private int hitCount; // The number of times a shot hit a ship. If the user shoots the same part of a ship more than once, every hit is counted, even though the additional ”hits” don’t do the user any good.
+	private int shipsSunk; // The number of ships sunk (10 ships in all).
+
+	/**
+	 * The constructor. 
+	 * Also initializes any game variables, such as how many shots have been fired.
+	 */
+	public Ocean() {
+		// Creates an empty ocean
+		this.ships = new Ship[10][10];
+		this.hit = new boolean[10][10];
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				this.ships[i][j] = new EmptySea();
+				this.hit[i][j] = false;
+			}
+		}
+		this.shotsFired = 0;
+		this.hitCount = 0;
+		this.shipsSunk = 0;		
+	}
+
+	/**
+	 * Place all ten ships randomly on the (initially empty) ocean. 
+	 * Place larger ships before smaller ones, or you may end up with no legal place to put a large ship. 
+	 */
+	public void placeAllShipsRandomly(){
+		Battleship battleship = new Battleship();
+		Cruiser[] cruisers = new Cruiser[2];
+		Destroyer[] destroyers = new Destroyer[3];
+		Submarine[] submarines = new Submarine[4];
+
+		placeOneShipRandomly(battleship);
+
+		for (Cruiser cruiser : cruisers) {
+			cruiser = new Cruiser();
+			placeOneShipRandomly(cruiser);
+		}
+
+		for (Destroyer destroyer : destroyers) {
+			destroyer = new Destroyer();
+			placeOneShipRandomly(destroyer);
+		}
+
+		for (Submarine submarine : submarines) {
+			submarine = new Submarine();
+			placeOneShipRandomly(submarine);
+		}
+
+	}
+
+	private void placeOneShipRandomly(Ship ship){
+		Random rand = new Random();		
+
+		int row = rand.nextInt(10);
+		int column = rand.nextInt(10);
+		boolean horizontal = rand.nextBoolean();		
+
+		while (!ship.okToPlaceShipAt(row, column, horizontal, this)) {
+			row = rand.nextInt(10);
+			column = rand.nextInt(10);
+			horizontal = rand.nextBoolean();
+		}
+		ship.placeShipAt(row, column, horizontal, this);
+	}
+	/**
+	 * Returns true if the given location contains a ship, false if it does not.
+	 * @param row
+	 * @param column
+	 * @return
+	 */
+	public boolean isOccupied(int row, int column){
+		return !this.ships[row][column].getShipType().equals("empty");		
+	}
+
+	/**
+	 * Returns true if the given location contains a ”real” ship, still afloat, (not an EmptySea), false if it does not. 
+	 * In addition, this method updates the number of shots that have been fired, and the number of hits. 
+	 * Note: If a location contains a ”real” ship, shootAt should return true every time the user shoots at that same location. 
+	 * Once a ship has been ”sunk”, additional shots at its location should return false.
+	 * @param row
+	 * @param column
+	 * @return
+	 */
+	public boolean shootAt(int row, int column){
+		this.shotsFired += 1;
+		this.hit[row][column] = true;
+		if (this.ships[row][column].shootAt(row, column)) {
+			this.hitCount += 1;
+			if (this.ships[row][column].isSunk()) {
+				this.shipsSunk += 1;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the number of shots fired (in this game).
+	 * @return
+	 */
+	public int getShotsFired(){
+		return this.shotsFired;
+	}
+
+	/**
+	 * Returns the number of hits recorded (in this game). All hits are counted, not just the first time a given square is hit.
+	 * @return
+	 */
+	public int getHitCount(){
+		return this.hitCount;
+	}
+
+	/**
+	 * Returns the number of ships sunk (in this game).
+	 * @return
+	 */
+	public int getShipsSunk(){
+		return this.shipsSunk;
+	}
+
+	/**
+	 * Returns true if all ships have been sunk, otherwise false.
+	 * @return
+	 */
+	public boolean isGameOver(){
+		return this.shipsSunk == 10;
+	}
+
+	/**
+	 * Returns the 10x10 array of ships. 
+	 * sometimes there is just no good alternative.
+	 */
+	public Ship[][] getShipArray(){
+		return this.ships;
+	}
+
+	/**
+	 * Prints the ocean.
+	 * The methods in the Ship class that take an Ocean parameter really need to be able to look at the contents of this array; the placeShipAt method even needs to modify it. While it is undesirable to allow methods in one class to directly access instance variables in another class, sometimes there is just no good alternative.
+	 */
+	public void print(){	
+		System.out.print("  ");
+		for (int i = 0; i < 10; i++) {
+			System.out.print(" " + i + " ");	
+		}
+
+		System.out.println();
+		for (int i = 0; i < 10; i++) {
+			System.out.print(i + " ");
+			for (int j = 0; j < 10; j++) {
+				int index;
+				if (ships[i][j].isHorizontal()) {
+					index = j - ships[i][j].getBowColumn();
+				}
+				else{
+					index = i - ships[i][j].getBowRow();
+				}
+				if (!ships[i][j].hit[index]) {
+					System.out.print(" . ");	
+				}
+				else{
+					System.out.print(" " + this.ships[i][j] + " ");
+				}
+
+			}
+			System.out.println();
+		}
+	}
+
+
+
+	public static void main(String[] args) {	
+		Ocean ocean = new Ocean();
+		ocean.print();
+		ocean.placeAllShipsRandomly();
+
+	}
+
+}

@@ -1,0 +1,198 @@
+package battleship;
+
+public abstract class Ship {
+	int bowRow;
+	int bowColumn;
+	int length;
+	boolean horizontal;
+	boolean[] hit = new boolean[4];
+	
+	/**
+	 * returns ship's length, this method exists only to be overridden
+	 * @return
+	 */
+	public int getLength() {
+		return length;
+	}
+	
+	/**
+	 * returns bowRow
+	 * @return
+	 */
+	public int getBowRow() {
+		return bowRow;
+	}
+	
+	/**
+	 * returns bowColumn
+	 * @return
+	 */
+	public int getBowColumn() {
+		return bowColumn;
+	}
+	
+	/**
+	 * returns horizontal
+	 * @return
+	 */
+	public boolean isHorizontal() {
+		return horizontal;
+	}
+	
+	/**
+	 * sets the value of bowRow
+	 * @param row
+	 */
+	public void setBowRow(int row) {
+		bowRow = row;
+	}
+	
+	/**
+	 * sets the value of bowColumn
+	 * @param column
+	 */
+	public void setBowColumn(int column) {
+		bowColumn = column;
+	}
+	
+	/**
+	 * sets the value of horizontal
+	 * @param horizontal
+	 */
+	public void setHorizontal(boolean horizontal) {
+		this.horizontal = horizontal;
+	}
+	
+	/**
+	 * this is a abstract method, which has no body
+	 * @return
+	 */
+	public abstract String getShipType();
+	
+	/**
+	 * returns true if it is okay to put a ship of this length with its bow in this location,
+	 * with the given orientation, and returns false otherwise
+	 * @param row
+	 * @param column
+	 * @param horizontal
+	 * @param ocean
+	 * @return
+	 */
+	public boolean okToPlaceShipAt(int row, int column, boolean horizontal, Ocean ocean) {
+		if (horizontal) {
+			for (int i = column; i < (column + this.length); i++) {
+				if (!ifInRange(row, i)) {
+					return false;
+				}
+			}
+			
+			for (int i = (row-1); i < (row + 2); i++) {
+				for (int j = (column -1); j < (column + this.length + 1); j++) {
+					if (ifInRange(i, j)) {
+						if (ocean.isOccupied(i, j)) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		else{
+			for (int i = row; i < (row + this.length); i++) {
+				if (!ifInRange(i, column)) {
+					return false;
+				}
+			}
+			for (int i = (row-1); i < (row + this.length + 1); i++) {
+				for (int j = (column -1); j < (column + 2); j++) {
+					if (ifInRange(i, j)) {
+						if (ocean.isOccupied(i, j)) {
+							return false;
+						}
+					}
+				}
+			}
+		}	
+		return true;
+	}
+	
+	private boolean ifInRange(int row, int column){
+		if (row >= 0 && row <= 9 && column >= 0 && column <= 9) {
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	/**
+	 * puts the ship in the ocean with given location and orientation
+	 * giving values to instance variables in the ship
+	 * also putting a reference to the ship in each of 1 or more (up to 4) locations in
+	 * the ships array in the Ocean object
+	 * @param row
+	 * @param column
+	 * @param horizontal
+	 * @param ocean
+	 */
+	public void placeShipAt(int row, int column, boolean horizontal, Ocean ocean) {
+		this.bowRow = row;
+		this.bowColumn = column;
+		this.horizontal = horizontal;
+		Ship ships = ocean.getShipArray();
+		if (horizontal) {
+			for (int i = 0; i < length; i++) {
+				ships[row][column+i] = this;
+			}
+		}
+		else {
+			for (int i = 0; i < length; i++) {
+				ocean.ships[row+i][column] = this;
+			}
+		}
+	}
+	
+	/**
+	 * if a part of the ship occupies the given position and ship hasn't sunk, mark that part as "his"
+	 * and returns true, otherwise returns false
+	 * @param row
+	 * @param column
+	 * @return
+	 */
+	public boolean shootAt(int row, int column) {
+		boolean partOfShip = (horizontal && row == bowRow && column >= bowColumn && column <= bowColumn + length - 1)
+				|| (!horizontal && row >= bowRow && row <= bowRow + length - 1 && column == bowColumn);
+		
+		if (partOfShip && !this.isSunk()) {
+			int indexOfHit = (row - bowRow) + (column - bowColumn);
+			this.hit[indexOfHit] = true;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	/**
+	 * returns true if every part of the ship has been hit, false otherwise
+	 * @return
+	 */
+	public boolean isSunk() {
+		for (int i = 0; i < length; i++) {
+			if (hit[i] == false)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * returns single-character String, "x" if ship has been sunk, "S" if not
+	 */
+	@Override
+	public String toString() {
+		String s;
+		if (this.isSunk())
+			s = "x";
+		else
+			s = "S";
+		return s;
+	}
+
+}

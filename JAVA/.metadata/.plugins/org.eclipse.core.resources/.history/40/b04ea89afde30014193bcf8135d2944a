@@ -1,0 +1,186 @@
+package battleship;
+
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class OceanTest {
+	Ocean ocean;
+	Battleship battleship;
+	Cruiser[] cruisers = new Cruiser[2];
+	Destroyer[] destroyers = new Destroyer[3];
+	Submarine[] submarines = new Submarine[4];
+
+	@Before
+	public void setUp() throws Exception {
+		ocean = new Ocean();
+		battleship = new Battleship();
+
+		for (int i = 0; i < cruisers.length; i++) {
+			cruisers[i] = new Cruiser();
+		}
+
+		for (int i = 0; i < destroyers.length; i++) {
+			destroyers[i] = new Destroyer();
+		}
+
+		for (int i = 0; i < submarines.length; i++) {
+			submarines[i] = new Submarine();
+		}
+	}
+
+	@Test
+	public void testOcean() {
+		Ocean ocean = new Ocean();
+		assertTrue(ocean instanceof Ocean);
+	}
+
+	@Test
+	public void testPlaceAllShipsRandomly() {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				assertFalse(ocean.isOccupied(i, j));
+			}
+		}
+
+		int count = 0;
+		int expected = 1*4 + 2*3 + 3*2 + 4*1;
+		ocean.placeAllShipsRandomly();
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (ocean.isOccupied(i, j)){
+					count++;
+				}
+			}
+		}		
+		assertEquals(expected, count);
+	}
+
+	@Test
+	public void testIsOccupied() {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				assertFalse(ocean.isOccupied(i, j));
+			}
+		}
+
+		ocean.placeAllShipsRandomly();
+		findShips();		
+
+		for (int i = 0; i < battleship.getLength(); i++) {
+			if (battleship.isHorizontal()) {
+				assertTrue(ocean.isOccupied(battleship.getBowRow(), battleship.getBowColumn()+i));
+			}
+			else {
+				assertTrue(ocean.isOccupied(battleship.getBowRow()+i, battleship.getBowColumn()));
+			}
+		}	
+
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < cruisers[i].getLength(); j++) {
+				if (cruisers[i].isHorizontal()) {
+					assertTrue(ocean.isOccupied(cruisers[i].getBowRow(), cruisers[i].getBowColumn()+j));
+				}
+				else {
+					System.out.println(cruisers[i].getBowRow());
+					System.out.println(cruisers[i].getBowColumn());
+					assertTrue(ocean.isOccupied(cruisers[i].getBowRow()+j, cruisers[i].getBowColumn()));
+				}
+			}
+		}
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < destroyers[i].getLength(); j++) {
+				if (destroyers[i].isHorizontal()) {
+					assertTrue(ocean.isOccupied(destroyers[i].getBowRow(), destroyers[i].getBowColumn()+j));
+				}
+				else {
+					assertTrue(ocean.isOccupied(destroyers[i].getBowRow()+j, destroyers[i].getBowColumn()));
+				}
+			}
+		}
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < submarines[i].getLength(); j++) {
+				if (submarines[i].isHorizontal()) {
+					assertTrue(ocean.isOccupied(submarines[i].getBowRow(), submarines[i].getBowColumn()+j));
+				}
+				else {
+					assertTrue(ocean.isOccupied(submarines[i].getBowRow()+j, submarines[i].getBowColumn()));
+				}
+			}
+		}
+	}
+
+	private void findShips(){
+		Ship[][] ships = ocean.getShipArray();
+		int cruisersIndex = 0;
+		int destroyersIndex = 0;
+		int submarinesIndex = 0;
+
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (ships[i][j].getShipType().equals("battleship")) {
+					battleship = (Battleship) ships[i][j];
+				}
+
+				if (ships[i][j].getShipType().equals("cruiser")) {
+					if (cruisers[cruisersIndex] == ships[i][j]) {
+						continue;
+					}
+					else{
+						cruisers[cruisersIndex] = (Cruiser) ships[i][j];
+						cruisersIndex++;
+					}
+				}
+
+				if (ships[i][j].getShipType().equals("destroyer")) {
+					destroyers[destroyersIndex] = (Destroyer) ships[i][j];
+					destroyersIndex++;
+				}
+
+				if (ships[i][j].getShipType().equals("submarine")) {
+					submarines[submarinesIndex] = (Submarine) ships[i][j];
+					submarinesIndex++;
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testShootAt() {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				assertFalse(ocean.shootAt(i, j));
+			}
+		}
+
+	}
+
+	@Test
+	public void testGetShotsFired() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetHitCount() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetShipsSunk() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testIsGameOver() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetShipArray() {
+		fail("Not yet implemented");
+	}
+
+}
